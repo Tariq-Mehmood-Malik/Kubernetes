@@ -25,18 +25,23 @@ It simplifies managing containers across multiple machines, making it easier to 
 As we already knows that kubernetes operates in a multi-node infrastructure called `cluster`. 
 A Kubernetes cluster consists of multiple nodes, which are divided into two types:
 
-- **Master Node(s) / Control Plane:**    
-  The master node is responsible for  running the control plane components, which are responsible for managing the cluster, including tasks like scheduling, scaling, and maintaining the desired state of applications. 
+### Master Node(s) / Control Plane:    
+  The master node is where control plane components runs, these components are responsible for managing the cluster, including tasks like scheduling, scaling, and maintaining the desired state of applications. 
   To ensure high availability of cluster, there can be multiple master nodes for the `control plane`.  
 
-- **Worker Nodes / Data Plane:**    
+### Worker Nodes / Data Plane: 
   These nodes responsible of running the applications, which includes execution of workloads, process requests, and run containers. The `data plane` is a group of worker nodes.
 
+Now lets discuss components of these Node:
 
+### Master Node Components:
 
+- **Kube-API Server**
+  This is main communuication hub in K8s architecture, it receieves commands / instracututions from CLI through 'kubectl' and comminucates with other components according to recievded instructions.
 
+- **Scheduler**
+  When API-Server receive instruction for resource creation it forwards it to Scheduler, sheduler base on worker nodes resources and work loads decides where new resource should be created.
 
-
-
-
-
+- **Controller Manager**
+  
+  
