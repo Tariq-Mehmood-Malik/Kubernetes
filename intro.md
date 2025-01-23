@@ -44,9 +44,14 @@ It consists of:
 
 Before diving into details of Master & Worker node components lets first understand what is `Pod`:
 
-- ***Pod:*** We already know what is container and how container works. Now the `Pod` in k8s is nothing more than a wrapper or a "bubble" that can hold one or more containers. In Kubernetes Pod is smallest deployable unit , not individual containers.
+- ***Pod:***   
+  We already know what is container and how container works. Now the `Pod` in k8s is nothing more than a wrapper or a "bubble" that can hold one or more containers. In Kubernetes Pod is smallest deployable unit , not individual containers.
     
-- ***Why Pod:*** K8s uses Pods instead of individual containers because they provide a way to group multiple containers that need to work together, if you are running application container and it need an other container for logging or monitoring in k8s single pod can be use for it. All containers in single Pod share the same network, storage, and resources, making it easy for them to communicate and collaborate. Pods also simplify management because all containers in a Pod start, stop, and scale together as a single unit. This ensures that a Pod of tightly coupled containers are treated as one logical application.
+- ***Why Pod:***   
+  K8s uses Pods instead of individual containers because they provide a way to group multiple containers that need to work together, if you are running application container and it need an other container for logging or monitoring in k8s single pod can be use for it. All containers in single Pod share the same network, storage, and resources, making it easy for them to communicate and collaborate. Pods also simplify management because all containers in a Pod start, stop, and scale together as a single unit. This ensures that a Pod of tightly coupled containers are treated as one logical application.
+
+![k8s-arc.svg](images/k8s-arc.svg)
+
 
 ### Master Node Components:
 
@@ -61,6 +66,9 @@ Before diving into details of Master & Worker node components lets first underst
   
 - **Controller Manager**   
   The Controller Manager continuously monitors the cluster to ensure it is running in the desired state. It uses information from the API Server and etcd to perform tasks such as maintaining the correct number of Pods, handling node failures, and managing the endpoints for Services. The Controller Manager is responsible for maintaining system health and ensuring that the desired state is consistently met.
+
+- **Cloud Controller Manager (Cloud Only)**   
+  It is primarily used when Kubernetes is hosted on a cloud provider. It is a component that allows Kubernetes to interact with the underlying cloud provider's API. It manages cloud-specific resources, such as load balancers, volumes, and networking, and ensures that Kubernetes resources (like nodes and services) are correctly integrated with the cloud infrastructure.
 
 ### Worker Node Components:
   
