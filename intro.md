@@ -67,3 +67,12 @@ Before diving into details of Master & Worker node components lets first underst
 - **Kubelet**   
   Its essential components of each worker node it communicates with the Control Plane (Master Node) to receive instructions and report the status of the node. It ensures that desired containers are running in a Pod as expected. It constantly monitors the Pods assigned to its node, ensuring they are healthy and in the desired state. If a container fails or is terminated, the Kubelet will attempt to restart it to maintain the desired state. It reports the status of the node and its containers back to the Kube-API Server, providing vital information about resource usage, health, and other node metrics.   
   When the Scheduler assigns a Pod to a node, the API Server communicates with the Kubelet on that node to start the necessary containers as specified in the Pod definition. The Kubelet then interacts with the container runtime (like containerd) to launch the containers in the Pod. 
+
+- **Kube-Proxy**   
+  Kube-proxy is a network proxy that runs on every worker node in a Kubernetes cluster. It manages network traffic, ensuring that requests to services (which expose a set of pods as a network service) are properly routed to the correct pods. Since pods in Kubernetes can be ephemeral, constantly destroyed and recreated with changing IP addresses, kube-proxy ensures that services remain accessible and traffic is always routed to the correct set of pods, even as their underlying IPs change.
+
+- **Container Runtime**   
+  A container runtime is the software responsible for running containers on each nodes. It manages the lifecycle of containers including pulling container images, starting and stopping containers.
+
+  
+  
