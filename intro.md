@@ -17,22 +17,27 @@ Kubernetes builds on the ideas from Docker and Docker Swarm, but with a much mor
 ---
 ## So, What is Kubernetes?
 
-Kubernetes is an open-source platform that automates the deployment, scaling, and management of containerized applications, ensuring efficient use of resources, high availability, and load balancing. 
-It simplifies managing containers across multiple machines, making it easier to run and scale large applications automatically.
+Kubernetes (K8s) is an open-source platform designed to automate deploying, scaling, and operating application containers, ensuring efficient use of resources, high availability, and load balancing. 
+It was originally developed by **Google** and is now maintained by the **Cloud Native Computing Foundation (CNCF)**. Kubernetes has become the go to standard for container orchestration, enabling developers to manage containerized applications across a cluster of machines.
 
 ## How Kubernetes Works / Architecture
 
-As we already knows that kubernetes operates in a multi-node infrastructure called `cluster`. 
-A Kubernetes cluster consists of multiple nodes, which are divided into two types:
-
-### Master Node(s) / Control Plane:    
-  The master node is where control plane components runs, these components are responsible for managing the cluster, including tasks like scheduling, scaling, and maintaining the desired state of applications. 
-  To ensure high availability of cluster, there can be multiple master nodes for the `control plane`.  
+As we already knows that kubernetes operates in a multi-node infrastructure called `cluster`. A Kubernetes cluster is a set of nodes (physical or virtual machines) that run containerized applications. 
+It consists of:
+- **Control Plane (Master Node)**
+- **Worker Nodes**
+ 
+### Master Node / Control Plane:    
+  The master node is where `control plane` components runs, these components are responsible for managing the cluster to achieve the desired state of applications. 
+  To ensure high availability there can be multiple master nodes for the `control plane`.  
 
 ### Worker Nodes / Data Plane: 
-  These nodes responsible of running the applications, which includes execution of workloads, process requests, and run containers. The `data plane` is a group of worker nodes.
+  These nodes are contorlled by control plane and responsible of running the applications, which includes execution of workloads, process requests, and running containers. The group of worker nodes is called `Data Plane`.
 
-Now lets discuss components of these Node:
+
+Before diving into detailes Master & Worker node componenets lets first understand what is `Pod`:
+
+***Pod:*** As we already know what is container and how container works. Now `Pod` in k8s is nothing more than a wrapper or a "bubble" that can hold one or more containers. It is smallest deployable unit in Kubernetes. 
 
 ### Master Node Components:
 
