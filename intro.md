@@ -20,9 +20,15 @@ Kubernetes builds on the ideas from Docker and Docker Swarm, but with a much mor
 Kubernetes (K8s) is an open-source platform designed to automate deploying, scaling, and operating application containers, ensuring efficient use of resources, high availability, and load balancing. 
 It was originally developed by **Google** and is now maintained by the **Cloud Native Computing Foundation (CNCF)**. Kubernetes has become the go to standard for container orchestration, enabling developers to manage containerized applications across a cluster of machines.
 
+- **Scaling:** Containers are automatically scaled based on demand using horizontal scaling.
+- **Operation:** Health checks, self-healing, and monitoring ensure containers run smoothly, with automatic restarts or replacements if issues arise.
+- **High Availability:** Replica sets and load balancing ensure that applications stay up and responsive, even if containers or nodes fail.
+- **Resource Efficiency:** Resource limits and Kubernetes optimizations ensure efficient use of compute resources.
+
 ## How Kubernetes Works / Architecture
 
 As we already knows that kubernetes operates in a multi-node infrastructure called `cluster`. A Kubernetes cluster is a set of nodes (physical or virtual machines) that run containerized applications. 
+
 It consists of:
 - **Control Plane (Master Node)**
 - **Worker Nodes**
@@ -34,19 +40,30 @@ It consists of:
 ### Worker Nodes / Data Plane: 
   These nodes are contorlled by control plane and responsible of running the applications, which includes execution of workloads, process requests, and running containers. The group of worker nodes is called `Data Plane`.
 
+## Core Components
 
-Before diving into detailes Master & Worker node componenets lets first understand what is `Pod`:
+Before diving into details of Master & Worker node components lets first understand what is `Pod`:
 
-***Pod:*** As we already know what is container and how container works. Now `Pod` in k8s is nothing more than a wrapper or a "bubble" that can hold one or more containers. It is smallest deployable unit in Kubernetes. 
+- ***Pod:*** We already know what is container and how container works. Now the `Pod` in k8s is nothing more than a wrapper or a "bubble" that can hold one or more containers. In Kubernetes Pod is smallest deployable unit , not individual containers.
+    
+- ***Why Pod:*** K8s uses Pods instead of individual containers because they provide a way to group multiple containers that need to work together, if you are running application container and it need an other container for logging or monitoring in k8s single pod can be use for it. All containers in single Pod share the same network, storage, and resources, making it easy for them to communicate and collaborate. Pods also simplify management because all containers in a Pod start, stop, and scale together as a single unit. This ensures that a Pod of tightly coupled containers are treated as one logical application.
 
 ### Master Node Components:
 
-- **Kube-API Server**
-  This is main communuication hub in K8s architecture, it receieves commands / instracututions from CLI through 'kubectl' and comminucates with other components according to recievded instructions.
+- **Kube-API Server**   
+  This is main communuication hub in K8s architecture,  It receives commands/instructions from the CLI (via kubectl) and communicates with other components.
 
-- **Scheduler**
-  When API-Server receive instruction for resource creation it forwards it to Scheduler, sheduler base on worker nodes resources and work loads decides where new resource should be created.
+- **Scheduler**   
+  When the API Server receives instructions for resource creation such as Pods, it forwards them to the Scheduler. The Scheduler places the Pods onto available worker nodes based on resource availability and workload distribution. It decides where new resources should be created, considering factors like CPU, memory, and other constraints.
 
-- **Controller Manager**
+- **etcd**   
+  After the Scheduler places the Pod on a worker node, the API Server sends the details to etcd. etcd is a distributed key-value store that holds all cluster data and the desired state of the system. It stores configurations, metadata, and runtime state, acting as the "source of truth" for the Kubernetes cluster.
   
+- **Controller Manager**   
+  The Controller Manager continuously monitors the cluster to ensure it is running in the desired state. It uses information from the API Server and etcd to perform tasks such as maintaining the correct number of Pods, handling node failures, and managing the endpoints for Services. The Controller Manager is responsible for maintaining system health and ensuring that the desired state is consistently met.
+
+### Worker Node Components:
   
+- **Kubelet**   
+  Its essential components of each worker node it communicates with the Control Plane (Master Node) to receive instructions and report the status of the node. It ensures that desired containers are running in a Pod as expected. It constantly monitors the Pods assigned to its node, ensuring they are healthy and in the desired state. If a container fails or is terminated, the Kubelet will attempt to restart it to maintain the desired state. It reports the status of the node and its containers back to the Kube-API Server, providing vital information about resource usage, health, and other node metrics.   
+  When the Scheduler assigns a Pod to a node, the API Server communicates with the Kubelet on that node to start the necessary containers as specified in the Pod definition. The Kubelet then interacts with the container runtime (like containerd) to launch the containers in the Pod. 
