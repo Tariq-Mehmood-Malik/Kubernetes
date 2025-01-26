@@ -111,6 +111,26 @@ Here are some tasks for your learning & practice , You can complete and share wo
   ![132](images/132.png)
 
 
-**4- Create a new deployment called deploy-02 in the dev-ns namespace with 2 containers using images nginx & httpd images & expose them. It should have 2 replicas and they should be exposed so both webpages can be reachable.**
+**4. Create a ConfigMap for storing your name & age**
 
-**5. Create a ConfigMap for storing your name & age**
+  Creating yaml.
+
+  ```yaml
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: tm-config
+  data:
+    name: "tariq-mehmood"
+    age: "28"
+  ```
+  ```bash
+  nano cm.yaml
+  kubelctl apply -f cm.yaml
+  kubectl get cm
+  ```
+
+  ![151](images/151.png)
+
+
+
