@@ -214,6 +214,7 @@ It should have 2 replicas and they should be exposed so both webpages can be rea
   kind: Service
   metadata:
     name: service-webapp2
+    namespace: dev-ns 
   spec:
     type: NodePort
     ports:
@@ -237,13 +238,18 @@ It should have 2 replicas and they should be exposed so both webpages can be rea
   ![143](images/143.png)
 
   ```bash
-  kubectl get all
+  kubectl get svc -n dev-ns
   ```
   ![144](images/144.png)
 
-  Checking both container by accessing them with Node-IP and Nodeport.
+  Checking both container by accessing them with Node-IP (same for both) and Nodeport (30080 & 30081).
+
+  ![145](images/145.png)
+
 
   
+  ![146](images/146.png)
+
 
 
 **5. Create a ConfigMap for storing your name & age**
