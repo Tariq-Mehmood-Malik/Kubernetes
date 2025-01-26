@@ -287,3 +287,8 @@ It should have 2 replicas and they should be exposed so both webpages can be rea
   ```
 
   ![151](images/151.png)
+
+
+6. Create a cm with current date/time and call in Pod
+
+7. Make a secret for your password (shouldnt be real one )
