@@ -47,7 +47,69 @@ Here are some tasks for your learning & practice , You can complete and share wo
 
 **2- Create a deployment deploy-webapp using image `engineerbaz/htmlfile:5` having 3 replicas.**
 
+  Creating required deployment in yaml.
+  ```yaml
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: deploy-webapp
+    labels:
+      app: web-dep
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: simple-webapp
+    template:
+      metadata:
+        labels:
+          app: simple-webapp
+      spec:
+        containers:
+          - name: baz-web
+            image: engineerbaz/htmlfile:5
+            ports:
+              - containerPort: 80
+  ```
+
+  ```bash
+  nano baz.yaml
+  kubelctl apply -f baz.yaml
+  kubectl get all
+  ```
+  ![121](images/121.png)
+  
+
 **3- Create a service using the following parameters : `Name: service-webapp; Type: NodePort; targetPort: 80; port: 80; nodePort: 30080; selector: simple-webapp` and Try to access the deployment using Node IP and port 30080.**
+
+  Craeting Yaml with requirements.
+  ```yaml
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: service-webapp
+  spec:
+    type: NodePort
+    ports:
+      - targetPort: 80
+        port: 80
+        nodePort: 30080
+    selector:
+      app: simple-webapp
+  ```
+
+  ```bash
+  nano svc.yaml
+  kubelctl apply -f svc.yaml
+  kubectl get all
+  ```
+  ![131](images/131.png)
+
+
+  Accessing web pod using node IP and port 30080.
+ 
+  ![132](images/132.png)
+
 
 **4- Create a new deployment called deploy-02 in the dev-ns namespace with 2 containers using images nginx & httpd images & expose them. It should have 2 replicas and they should be exposed so both webpages can be reachable.**
 
