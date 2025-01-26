@@ -111,7 +111,22 @@
 **4.Create a new deployment called deploy-02 in the dev-ns namespace with 2 containers using images nginx & httpd images & expose them. 
 It should have 2 replicas and they should be exposed so both webpages can be reachable.**
 
-  Craeting Yaml file name `deploy-02.yaml` for task with port `80` for httpd and port `8081` for nginx. To make sure nginx use port 8081 we need to created custom `nginx.conf` file and mount it on volume by using ConfigMap.
+  Creating namespace `dev-ns`.
+
+  ```yaml
+  apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: dev-ns
+  ```
+  ```bash
+  nano dev-ns.yaml
+  kubectl apply -f dev-ns.yaml 
+  ```
+
+  ![140](images/140.png)
+
+  Craeting Yaml file name `deploy-02.yaml` for task with port `80` for httpd and port `8081` for nginx. To make sure nginx use port 8081 we need to create custom `nginx.conf` file and mount it on volume by using ConfigMap.
 
   ```yaml
   apiVersion: apps/v1
