@@ -41,6 +41,9 @@
   ![115](images/115.png)
   
 
+---
+
+<br>   
 
 **2- Create a deployment deploy-webapp using image `engineerbaz/htmlfile:5` having 3 replicas.**
 
@@ -77,6 +80,10 @@
   ![121](images/121.png)
   
 
+---
+
+<br>   
+
 **3- Create a service using the following parameters : `Name: service-webapp; Type: NodePort; targetPort: 80; port: 80; nodePort: 30080; selector: simple-webapp` and Try to access the deployment using Node IP and port 30080.**
 
   Craeting Yaml with requirements.
@@ -107,6 +114,10 @@
  
   ![132](images/132.png)
 
+
+---
+
+<br>   
 
 **4.Create a new deployment called deploy-02 in the dev-ns namespace with 2 containers using images nginx & httpd images & expose them. 
 It should have 2 replicas and they should be exposed so both webpages can be reachable.**
@@ -266,6 +277,9 @@ It should have 2 replicas and they should be exposed so both webpages can be rea
   ![146](images/146.png)
 
 
+---
+
+<br>
 
 **5. Create a ConfigMap for storing your name & age**
 
@@ -289,6 +303,17 @@ It should have 2 replicas and they should be exposed so both webpages can be rea
   ![151](images/151.png)
 
 
+---
+
+<br>   
+
 6. Create a cm with current date/time and call in Pod
+
+
+
+
+---
+
+<br>   
 
 7. Make a secret for your password (shouldnt be real one )
