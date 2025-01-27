@@ -2,7 +2,7 @@
 
 ## How we got Kubernetes
 
-Imagine you're a developer trying to deploy an app. Docker comes to the rescue by introducing containers, which package your app and all its dependencies into a neat, portable unit that can run anywhere—whether on your laptop or in the cloud. This makes it much easier to develop and deploy apps consistently across different environments.
+Imagine you're a developer trying to deploy an app. Docker comes to the rescue by introducing containers, which package your app and all its dependencies into a neat, portable unit that can run anywhere whether on your laptop or in the cloud. This makes it much easier to develop and deploy apps consistently across different environments.
 
 As your app grows, you realize you need more than just one container. You need multiple containers—one for the web server, one for the database, and others for different services. Docker provides Docker Compose, a tool that allows you to define and manage multiple containers as a single application using a simple configuration file. This is a big step forward for handling more complex apps, especially during development and testing.
 
