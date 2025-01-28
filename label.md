@@ -192,24 +192,24 @@ These are the primary commands for labeling and listing resources in Kubernetes.
 
 
 
-= (Equality): Selects resources where the label matches the given value.
+`=` (Equality): Selects resources where the label matches the given value.   
 
-kubectl get pods -l env=prod
-!= (Inequality): Selects resources where the label value does not match the given value.
+kubectl get pods -l env=prod     
+`!=` (Inequality): Selects resources where the label value does not match the given value.   
 
-kubectl get pods -l env!=prod
-in: Selects resources where the label's value is within a set of values.
+kubectl get pods -l env!=prod   
+`in` Selects resources where the label's value is within a set of values.   
 
-kubectl get pods -l env in (prod,staging)
-notin: Selects resources where the label's value is not in a specified set of values.
+kubectl get pods -l env in (prod,staging)   
+`notin` Selects resources where the label's value is not in a specified set of values.   
 
-kubectl get pods -l env notin (prod,staging)
-exists: Selects resources where a label key exists, regardless of its value.
+kubectl get pods -l env notin (prod,staging)   
+`exists` Selects resources where a label key exists, regardless of its value.    
 
-kubectl get pods -l env
-Combination of Operators: You can use multiple operators in the same query to filter based on multiple criteria.
+kubectl get pods -l env   
+Combination of Operators: You can use multiple operators in the same query to filter based on multiple criteria.   
 
-kubectl get pods -l env=prod,version=v2
+kubectl get pods -l env=prod,version=v2   
 
 
 
