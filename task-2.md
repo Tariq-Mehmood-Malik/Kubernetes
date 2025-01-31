@@ -309,7 +309,52 @@ It should have 2 replicas and they should be exposed so both webpages can be rea
 
 6. Create a cm with current date/time and call in Pod
 
+  Creating variables to store current time & date through CLI.
 
+  ```bash
+  DATE=$(date "+%Y-%m-%d")
+  TIME=$(date "+%H:%M:%S")
+  ```
+  
+  ![261](images/261.png)
+
+  Creating ConfigMap through CLI with Time and Date variables.
+
+  ```bash
+  kubectl create cm datetime --from-literal=date="$DATE" --from-literal=time="$TIME"
+  kubectl get cm
+  ```
+
+  ![262](images/262.png)
+  
+  Creating POD to call enviroemntal variables from ConfigMap.
+
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: pod-time
+    labels:
+      type: time-date
+  spec:
+    containers:
+    - name: web-time
+      image: nginx
+      ports:
+      - containerPort: 80
+      envFrom:
+      - configMapRef:
+          name: datetime
+  ```
+
+  ```bash
+  nano time.yaml
+  kubectl apply -f time.yaml
+  kubectl get po
+  kubectl exec -it pod-time -- env
+  ```
+
+  ![263](images/263.png)
 
 
 ---
