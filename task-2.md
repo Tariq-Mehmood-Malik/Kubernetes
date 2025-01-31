@@ -354,7 +354,7 @@ It should have 2 replicas and they should be exposed so both webpages can be rea
   kubectl exec -it pod-time -- env
   ```
 
-  ![263](images/263.png)
+  ![263](images/264.png)
 
 
 ---
