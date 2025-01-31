@@ -361,4 +361,68 @@ It should have 2 replicas and they should be exposed so both webpages can be rea
 
 <br>   
 
-7. Make a secret for your password (shouldnt be real one )
+7. Make a secret for your password (shouldnt be real one)
+
+  Creating encoded password for `Secret`.
+
+  ```bash
+  echo -n 'mytestpass' | base64
+  ```
+
+  Creating `Secret` yaml.
+
+  ```yaml
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: test-pass
+    labels:
+      type: secret
+  data:
+    password: bXl0ZXN0cGFzcw==  # base64 password
+  ```
+
+  ```bash
+  nano pass.yaml
+  kubectl apply -f pass.yaml
+  kubectl get secret
+  ```
+
+  ![271](images/271.png)
+
+
+  Creating POD to use secret as enviroemntal variables.
+
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: pod-secret
+    labels:
+      type: secret
+  spec:
+    containers:
+    - name: web-secret
+      image: nginx
+      ports:
+      - containerPort: 80
+      env:
+      - name: PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: test-pass
+            key: password
+  ```
+
+  ```bash
+  nano pod-pass.yaml
+  kubectl apply -f pod-pass.yaml
+  kubectl get po
+  kubectl exec -it pod-secret -- env
+  ```
+
+  ![272](images/272.png)
+
+
+  
+
