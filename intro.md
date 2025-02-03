@@ -82,12 +82,13 @@ Before diving into details of Master & Worker node components lets first underst
 ### **Note:**
  Please note that Master node also contains Worker nodes componenets whice are `Kubelet, Kube-proxy & Container Runtime`, now you are wondering why let me explain.    
  Control plane components like (API server, scheduler, etc.) are often deployed as static pods. Static Pods are pods managed directly by the `Kubelet` on a specific node, not by the Kubernetes control plane. They are defined in a manifest directory (A directory on a node where the kubelet looks for static pod definitions) on the node itself and are used to run critical system components (like the control plane) before the Kubernetes API server is fully operational.   
-**`Kubelet:`** Mandatory on master nodes to start and maintain static pods defined in the pod-manifest-path. When using `kubeadm` for cluster creation the API server, scheduler, controller manager, and etcd are deployed as static pods and managed by the kubelet on the master node.   
-**`Container Runtime:`** The kubelet relies on a container runtime to execute static pods on master nodes.   
-**`Kube-proxy:`** If the master node is also a worker node (not recommended in production), kube-proxy is needed. If the master node is only control plane then kube-proxy may still run to support networking for control plane pods like metrics-server & DNS. In many clusters, kube-proxy runs on all nodes (including masters) via a `DaemonSet`.
+- **`Kubelet:`** Mandatory on master nodes to start and maintain static pods defined in the pod-manifest-path. When using `kubeadm` for cluster creation the API server, scheduler, controller manager, and etcd are deployed as static pods and managed by the kubelet on the master node.   
+- **`Container Runtime:`** The kubelet relies on a container runtime to execute static pods on master nodes.   
+- **`Kube-proxy:`** If the master node is also a worker node (not recommended in production), kube-proxy is needed. If the master node is only control plane then kube-proxy may still run to helps with network management and ensuring traffic can flow to the correct control plane components and services. In many clusters, kube-proxy runs on all nodes (including masters) via a `DaemonSet`.
 
+---
 
-### K8S ADD-ONS
+## K8S ADD-ONS
 Add-ons are additional components or extensions that are installed to enhance the functionality of the cluster. These add-ons provide a variety of features that can help manage networking, storage, monitoring, security, logging, and more. Kubernetes itself is modular and doesn’t include all possible features out of the box, so these add-ons can be added to address many common use cases.
 
 - **CoreDNS**   
