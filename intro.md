@@ -27,7 +27,7 @@ As we already knows that kubernetes operates in a multi-node infrastructure call
 
 It consists of:
 - **Control Plane (Master Node)**
-- **Worker Nodes**
+- **Worker Nodes (Data Plane)**
  
 ### Master Node / Control Plane:    
   The master node is where `control plane` components runs, these components are responsible for managing the cluster to achieve the desired state of applications. 
