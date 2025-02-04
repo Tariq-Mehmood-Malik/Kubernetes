@@ -87,7 +87,14 @@ Before diving into details of Master & Worker node components lets first underst
 Add-ons are additional components or extensions that are installed to enhance the functionality of the cluster. These add-ons provide a variety of features that can help manage networking, storage, monitoring, security, logging, and more. Kubernetes itself is modular and doesn’t include all possible features out of the box, so these add-ons can be added to address many common use cases. We will cover important add-ons in future articles.  
 
 
+## Kubernetes Resources & Objects
 
+In Kubernetes (K8s), the terms resources and objects are often used interchangeably, but they actually have different meanings. Kubernetes uses a variety of resources and objects to manage applications, networking, and configurations within the cluster. 
+
+- **Kubernetes Resources** are the types (or categories) of components that Kubernetes manages (like Pod, Service, Deployment).   
+- **Kubernetes Objects** are the instances or real configurations of these resources (like a specific Pod or Deployment with set parameters).   
+
+In future article we will discuss these resources in details.
 
 ## What's Next?
 
