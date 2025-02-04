@@ -80,43 +80,12 @@ Before diving into details of Master & Worker node components lets first underst
 
 
 ### **Note:**
- Please note that Master node also contains Worker nodes componenets whice are `Kubelet, Kube-proxy & Container Runtime`, now you are wondering why let me explain.    
- Control plane components like (API server, scheduler, etc.) are often deployed as static pods. Static Pods are pods managed directly by the `Kubelet` on a specific node, not by the Kubernetes control plane. They are defined in a manifest directory (A directory on a node where the kubelet looks for static pod definitions) on the node itself and are used to run critical system components (like the control plane) before the Kubernetes API server is fully operational.   
-- **`Kubelet:`** Mandatory on master nodes to start and maintain static pods defined in the pod-manifest-path. When using `kubeadm` for cluster creation the API server, scheduler, controller manager, and etcd are deployed as static pods and managed by the kubelet on the master node.   
-- **`Container Runtime:`** The kubelet relies on a container runtime to execute static pods on master nodes.   
-- **`Kube-proxy:`** If the master node is also a worker node (not recommended in production), kube-proxy is needed. If the master node is only control plane then kube-proxy may still run to helps with network management and ensuring traffic can flow to the correct control plane components and services. In many clusters, kube-proxy runs on all nodes (including masters) via a `DaemonSet`.
+ Please note that Master node can also contain componenets like `Kubelet, Kube-proxy & Container Runtime`, now you are wondering why let me explain.      
+ When setting up a Kubernetes cluster with **kubeadm** (Which we will cover in upcoming article), control plane components (like the API server and scheduler) are deployed as **static pods**. These pods are managed by the **Kubelet** on each node, not by Kubernetes itself, and are defined in a specific manifest directory. **Kubeadm** automatically creates these static pod definitions to start essential system components. The **Kubelet** ensures these static pods stay up and running, even if they crash or are terminated. Once the API server is running, it manages the cluster's resources, while the **Kubelet** continues to ensure that essential system components, including the API server itself, remain available. The kubelet relies on a **Container Runtime** to execute and run static pods on master nodes. If the master node is also a worker node (not recommended in production), **kube-proxy** is needed. If the master node is only control plane then **kube-proxy** may still run to helps with network management and ensuring traffic can flow to the correct control plane components and services. In many clusters, kube-proxy runs on all nodes (including masters) via a `DaemonSet`.
 
----
+## K8S ADD-ONS   
+Add-ons are additional components or extensions that are installed to enhance the functionality of the cluster. These add-ons provide a variety of features that can help manage networking, storage, monitoring, security, logging, and more. Kubernetes itself is modular and doesn’t include all possible features out of the box, so these add-ons can be added to address many common use cases. We will cover important add-ons in future articles.  
 
-## K8S ADD-ONS
-Add-ons are additional components or extensions that are installed to enhance the functionality of the cluster. These add-ons provide a variety of features that can help manage networking, storage, monitoring, security, logging, and more. Kubernetes itself is modular and doesn’t include all possible features out of the box, so these add-ons can be added to address many common use cases.
-
-- **CoreDNS**   
-CoreDNS is the default DNS service in Kubernetes. It provides name resolution for services and pods within the cluster. When a pod is created in Kubernetes, CoreDNS automatically creates DNS records to map services to the correct IPs. This makes service discovery much easier.
-
-- **Network Plugins (CNI - Container Network Interface)**
- CNI plugins manage networking in Kubernetes, ensuring that pods can communicate with each other across different nodes in a cluster.
-
-- **Ingress Controllers**
- An Ingress Controller is responsible for managing external access to services in a Kubernetes cluster, typically HTTP/HTTPS traffic. It handles things like load balancing, SSL termination, and routing based on the host or path.
- 
-- **Metrics Server**   
-The Metrics Server collects and aggregates resource usage data (like CPU and memory usage) from nodes and pods in the cluster. This data is used by the Horizontal Pod Autoscaler (HPA) to scale applications automatically based on resource consumption.
-
-- **Helm**
- Helm is a package manager for Kubernetes. It helps to manage complex applications by bundling Kubernetes resources into packages called charts.  Helm simplifies deployment and management of applications by using pre-configured templates. It enables easy upgrades, rollbacks, and sharing of Kubernetes apps.
-
-- **Monitoring and Visualization**
-A monitoring tool collects metrics from Kubernetes clusters (like pod metrics, node health, and resource usage). A visualization tool is used to create dashboards from Prometheus metrics.
-
-- **EFK Stack**
-The EFK stack is commonly used for logging in Kubernetes. `Fluentd` collects logs from the cluster. `Elasticsearch` stores and indexes logs. `Kibana` visualizes logs in a web interface.
-
-- **Calico (Network Policy and Security)**
-Calico provides advanced networking capabilities and security features like Network Policies and Network Security. Calico can be used to enforce network security policies and control the communication between pods at the network level. For example, it can restrict certain pods from accessing other pods or services based on IP addresses or labels.
-
-- **Admission Controllers**   
-Admission controllers are plugins that intercept requests to the Kubernetes API server before they are persisted in the cluster. They can enforce certain rules or policies on resources that are being created or modified (e.g., enforcing resource limits, ensuring certain labels are applied, or blocking certain actions).
 
 
 ## What's Next?
