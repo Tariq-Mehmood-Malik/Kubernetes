@@ -52,4 +52,92 @@ kubectl [command] [resource] [options]
 `--kubeconfig=<path>`: Specify the kubeconfig file location
 
 
+### Example Commands:
+List Pods:   
+```bash
+kubectl get pods
+```
+
+List node complete details:   
+```bash
+kubectl get nodes -o wide
+```
+
+Describe a Deployment:   
+```bash
+kubectl describe deployment <deployment-name>
+```
+
+Create a Resource from a YAML File:   
+```bash
+kubectl create -f <file.yaml>
+```
+
+Apply Changes from a YAML File:   
+```bash
+kubectl apply -f <file.yaml>
+```
+
+Delete a Pod:   
+```bash
+kubectl delete pod <pod-name>
+```
+
+Get Logs from a Pod:   
+```bash
+kubectl logs <pod-name>
+```
+
+Scale a Deployment:   
+```bash
+kubectl scale deployment <deployment-name> --replicas=<number>
+```
+
+Run a Command Inside a Pod:   
+```bash
+kubectl exec -it <pod-name> -- <command>
+```
+
+Get Resources in a Specific Namespace:   
+```bash
+kubectl get pods --namespace=<namespace-name>
+```
+
+Output Resource Details in YAML Format:   
+```bash
+kubectl get pod <pod-name> -o yaml
+```
+
+### Other major commands   
+These 3 commands are very usefull in resource creation and management.    
+
+1. **`kubectl api-resources`**:
+   
+   Lists all available Kubernetes resource types (e.g., pods, services, deployments).
+   
+     ```bash
+     kubectl api-resources
+     ```
+
+2. **`kubectl api-versions`**:
+   
+   Displays the API versions available in the cluster.
+   
+     ```bash
+     kubectl api-versions
+     ```
+
+3. **`kubectl explain`**:
+   
+   Provides detailed explanations of Kubernetes resources and their fields.
+   
+     ```bash
+     kubectl explain pod
+     ```
+     ```bash
+     kubectl explain pod.spec.containers
+     ```
+
+
+
    
