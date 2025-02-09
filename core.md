@@ -157,8 +157,8 @@ These 3 commands are very usefull in resource creation (through `YAML`) and mana
 
 ## What's Next?
 
-In Next Part, we will discuss Namespace, Pod & Deplyment.
+In Next Part, we will discuss Namespace & Pod.
 
-[Next Article: Namespace, Pod & Deplyment →](res-1.md)
+[Next Article: Namespace & Pod →](res-1.md)
   
 
