@@ -171,6 +171,6 @@ kubectl top pod <pod-name>
 
 ## What's Next?
 
-In Next Part, we will discuss Namespace & Pod.
+In Next Part, we will discuss Imperative vs. Declarative.
 
-[Next Article: Namespace & Pod →](res-1.md)
+[Next Article: Imperative vs. Declarative →](im-vs-dec.md)
