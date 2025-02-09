@@ -1,5 +1,5 @@
 # K8s Resources
-k8s has many resources which we can create and use. In this article we will explain `namespace`, `pod` & `deployment` and create them using CLI 
+k8s has many resources which we can create and use. In this article we will explain `namespace`, `pod` & `deployment` and we will create them using CLI. 
 
 ### **Namespace**
 It is a virtual cluster within a physical cluster. Namespaces is used to isolate resources (separate environments for `dev` and `prod`). Resources (like Pods, Deployments) belong to a namespace. The `default` namespace is used if none is specified.
