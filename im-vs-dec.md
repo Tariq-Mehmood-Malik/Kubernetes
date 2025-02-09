@@ -71,8 +71,15 @@ Once you apply this YAML file, Kubernetes will ensure that a pod named **my-pod*
 You can use **imperative commands to generate YAML files** For example:  
 ```bash
 kubectl run my-pod --image=nginx --port=80 --dry-run=client -o yaml > pod.yaml
-```    
+```
 This creates a YAML template you can tweak and reuse declaratively.  
 
+---
 
+## What's Next?
+
+In Next Part, we will discuss YAML for Kubernetes.
+
+[Next Article: YAML for Kubernetes →](yaml.md)
+   
 
