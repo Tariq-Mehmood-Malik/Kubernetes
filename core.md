@@ -151,4 +151,14 @@ These 3 commands are very usefull in resource creation (through `YAML`) and mana
 
 ![kc4](images/kc4.png)
 
-   
+
+---
+
+
+## What's Next?
+
+In Next Part, we will discuss Namespace, Pod & Deplyment.
+
+[Next Article: Namespace, Pod & Deplyment →](res-1.md)
+  
+
