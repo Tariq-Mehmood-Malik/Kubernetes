@@ -109,7 +109,7 @@ kubectl get pod <pod-name> -o yaml
 ```
 
 ### Other major commands   
-These 3 commands are very usefull in resource creation and management.    
+These 3 commands are very usefull in resource creation (through `YAML`) and management.    
 
 1. **`kubectl api-resources`**:
    
