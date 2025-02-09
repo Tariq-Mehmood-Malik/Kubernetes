@@ -169,4 +169,8 @@ kubectl get pods -w
 kubectl top pod <pod-name>
 ```
 
+## What's Next?
 
+In Next Part, we will discuss Namespace & Pod.
+
+[Next Article: Namespace & Pod →](res-1.md)
