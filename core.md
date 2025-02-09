@@ -53,6 +53,11 @@ kubectl [command] [resource] [options]
 
 
 ### Example Commands:
+List all resource in `default` namespace:   
+```bash
+kubectl get all
+```
+
 List Pods:   
 ```bash
 kubectl get pods
