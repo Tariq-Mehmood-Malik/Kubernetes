@@ -60,16 +60,18 @@ spec:
 Here’s how it all comes together in a Kubernetes **Pod** definition:
 
 ```yaml
-apiVersion: v1
-kind: Pod
+apiVersion: v1              # Specifies the API version to use
+kind: Pod                   # Defines the resource type
 metadata:
-  name: my-pod
+  name: my-pod               # The name of the Pod. This uniquely identifies the Pod.
+  labels:                    # Labels are key-value pairs used to organize and select resources.
+    app: nginx-pod           # A label to associate the Pod with the 'nginx-pod' application.
 spec:
-  containers:
-  - name: nginx
-    image: nginx:latest
-    ports:
-    - containerPort: 80
+    containers:              # Defines the containers to be run within the Pod.
+    - name: my-app-container  # The name of the container.
+      image: my-app-image:latest  # The Docker image for the container.
+      ports:
+      - containerPort: 80     # The container will expose port 80.
 ```
 
 - **apiVersion**: Specifies the API version.
