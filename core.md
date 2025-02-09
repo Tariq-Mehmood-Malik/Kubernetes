@@ -119,6 +119,9 @@ These 3 commands are very usefull in resource creation and management.
      kubectl api-resources
      ```
 
+![kc1](images/kc1.png)
+
+
 2. **`kubectl api-versions`**:
    
    Displays the API versions available in the cluster.
@@ -127,6 +130,9 @@ These 3 commands are very usefull in resource creation and management.
      kubectl api-versions
      ```
 
+![kc2](images/kc2.png)
+
+
 3. **`kubectl explain`**:
    
    Provides detailed explanations of Kubernetes resources and their fields.
@@ -134,10 +140,15 @@ These 3 commands are very usefull in resource creation and management.
      ```bash
      kubectl explain pod
      ```
+
+![kc3](images/kc3.png)
+
+
+
      ```bash
      kubectl explain pod.spec.containers
      ```
 
-
+![kc4](images/kc4.png)
 
    
