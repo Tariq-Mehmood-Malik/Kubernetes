@@ -33,17 +33,20 @@ Then, you use a command to apply this file to Kubernetes.
 
 Creating a Pod declaratively (save this as `pod.yaml`):  
 ```yaml
-apiVersion: v1
-kind: Pod
+apiVersion: v1        
+kind: Pod           
 metadata:
-  name: my-pod
-spec:
-  containers:
-  - name: nginx
-    image: nginx:latest
+  name: my-pod          
+  labels:              
+    app: pod-nginx          
+  spec:                
+  containers:                
+  - name: nginx            
+    image: nginx:latest      
     ports:
-    - containerPort: 80
+    - containerPort: 80   
 ```
+
 This file tells Kubernetes that you want a Pod resource that should have a container named `nginx`, using the `nginx image` and conatiner port is `80`.    
 You would then apply this configuration to Kubernetes using the command:
 
@@ -62,6 +65,8 @@ Once you apply this YAML file, Kubernetes will ensure that a pod named **my-pod*
 - `Initial Setup`: You need to create a configuration file (YAML/JSON) for every resource, which takes a bit more effort upfront.   
 - `Learning Curve`: Understanding how to write YAML and structure the files can be tricky for beginners.   
 
+---
+
 ### **Key Differences**  
 
 | **Aspect**          | **Imperative**                          | **Declarative**                        |  
@@ -77,6 +82,6 @@ Once you apply this YAML file, Kubernetes will ensure that a pod named **my-pod*
 You can use **imperative commands to generate YAML files** For example:  
 ```bash
 kubectl run my-pod --image=nginx --port=80 --dry-run=client -o yaml > pod.yaml
-```  
+```    
 This creates a YAML template you can tweak and reuse declaratively.  
 
