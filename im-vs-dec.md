@@ -47,12 +47,8 @@ spec:
     - containerPort: 80   
  
 ```
-Each YAML in K8s has 4 major parts which are apiVersion, kind, metadata & spec (`AKMS`).   
-**`apiVersion`**: Specifies the version of the Kubernetes API for the resource (e.g., `v1` for Pod).   
-**`kind`**: Specifies the type of resource (e.g., `Deployment`, `Pod`).   
-**`metadata`**: Contains information like the resource's name, namespace, labels, and other identifying data.   
-**`spec`**: Defines the desired configuration for the resource, such as container specs, and other settings that describe how Kubernetes should manage the resource.   
 
+In next section we will discuss k8s `YAML` in details.   
 
 Above YAML file tells Kubernetes that you want a Pod resource that should have a container named `nginx`, using the `nginx :latest` image and container port is `80`.    
 You would save it and then apply this configuration to Kubernetes using the command:
