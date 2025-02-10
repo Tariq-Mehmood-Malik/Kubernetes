@@ -16,9 +16,38 @@ ReplicaSet ensures that a specified number of identical Pods are running at any 
 
 ---
 
-### Create a Deployment in YAML
+### Create a Deployment
 
-A Deployment YAML defines how Kubernetes should manage Pods over time.
+### 1.Imperative Way
+
+In Kubernetes, you can also create a deployment in an imperative way using the `kubectl` command. Here's the command to create a deployment with a specific image and other parameters:   
+```bash
+kubectl create deployment <deployment-name> --image=<image-name>
+```   
+**Example:**   
+```bash
+kubectl create deployment my-app --image=nginx:latest
+```    
+This creates a deployment named `my-app` using the `nginx:latest` image.
+
+#### Additional Options:
+- **Expose the deployment as a service**:
+  If you want to expose your deployment as a service.   
+  ```bash
+  kubectl create deployment my-app --image=nginx:latest --port=80      # Container Listing Port 80
+  kubectl expose deployment my-app --port=80 --target-port=80 --name=my-app-service
+  ```   
+- **Set the number of replicas**:
+  You can set the number of replicas for your deployment:   
+  ```bash
+  kubectl create deployment my-app --image=nginx:latest --replicas=3 
+  ```   
+
+### 2.Declarative Way
+
+For long-term management, scalability, and reliability, declarative configurations (via YAML/JSON files) are better because they enable Kubernetes to enforce the desired state. They also help with automation, CI/CD integration, and consistency across environments.
+
+Following is an example of Deployment YAML file.
 
 ```yaml
 apiVersion: apps/v1
