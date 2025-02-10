@@ -198,7 +198,6 @@ In this example:
 - There are 3 Pods.
 - There's one Deployment (`my-deployment`), which ensures that 3 Pods are running.
 - The ReplicaSet is managing the Pods for the Deployment.
-- 
 ---
 
 #### How Resources Are Created with a Deployment:
