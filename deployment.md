@@ -1,6 +1,6 @@
 # Kubernetes Deployment
 
-A **Kubernetes Deployment** is a fundamental building block for managing containerized applications in a Kubernetes cluster. A Deployment is an API resource and a higher-level abstraction that provides a **declarative way to manage and scale a set of identical Pods**. It provides declarative updates to Pods and ReplicaSets, ensuring that the desired number of replicas are running and that Pods are replaced automatically if they fail or need to be updated. Deployments are commonly used for managing stateless applications, such as web servers or microservices, because they handle rolling updates, scaling, and self-healing (restarting Pods when they fail).
+In Kubernetes, a **pod** is the smallest and simplest unit that we can deploy and manage. On other hand a **Deployment** is used to manages **pods** by ensuring the desired number of replicas (copies) of the pod are running at all times. The Deployment handles the creation, updating, and scaling of pods, while ensuring that if any pod fails or is terminated, Kubernetes automatically replaces it to maintain the desired number of pods.
 
 **Features:**
 - `Scaling`: You can change the number of replicas by updating the replicas field in the Deployment YAML. Kubernetes will automatically scale up or down to match the desired number of replicas.
@@ -28,7 +28,7 @@ kubectl create deployment <deployment-name> --image=<image-name>
 ```bash
 kubectl create deployment my-app --image=nginx:latest
 ```    
-This creates a deployment named `my-app` using the `nginx:latest` image.
+This creates a deployment of single Pod named `my-app` using single container of the `nginx:latest` image.
 
 #### Additional Options:
 - **Expose the deployment as a service**:
@@ -38,14 +38,14 @@ This creates a deployment named `my-app` using the `nginx:latest` image.
   kubectl expose deployment my-app --port=80 --target-port=80 --name=my-app-service
   ```   
 - **Set the number of replicas**:
-  You can set the number of replicas for your deployment:   
+  You can set the number of replicas (copies of Pods) for your deployment:   
   ```bash
   kubectl create deployment my-app --image=nginx:latest --replicas=3 
   ```   
 
 ### 2.  Declarative Way
 
-For long-term management, scalability, and reliability, declarative configurations (via YAML/JSON files) are better because they enable Kubernetes to enforce the desired state. They also help with automation, CI/CD integration, and consistency across environments.
+For long-term management, scalability, and reliability, declarative configurations (via YAML/JSON files) are better because they enable Kubernetes to enforce the desired state. 
 
 Following is an example of Deployment YAML file.
 
@@ -81,7 +81,7 @@ kind: Deployment
 metadata:
   name: my-deployment
   labels:
-    app: my-app
+    app: my-dep
 ```
 **apiVersion: apps/v1**  
 This field specifies the API version of the resource. In this case, `apps/v1` is used for Deployments.
@@ -92,7 +92,7 @@ This defines the type of Kubernetes resource being created. In this case, it's a
 **metadata:**  
 Contains metadata about the Deployment, like its name, namespace, and labels.  
 - **name**: `my-deployment` is the name given to the Deployment.
-- **labels**: Labels are used to categorize or organize resources, here the label is `app: my-app`.
+- **labels**: Labels are used to categorize or organize resources, here the label is `app: my-dep`.
 
 ```yaml
 spec:
@@ -138,7 +138,7 @@ A selector with `matchLabels` is used to select resources (such as Pods) based o
 ```
 
 **template:**  
-Describes the template for the Pods that will be created. This is where the configuration for the Pods (like containers and ports) is specified.
+Describes the template for the Pods that will be created, if not already present in namespace. This is where the configuration for the Pods (like containers and ports) is specified.
 
 **metadata (inside template):**  
 Labels for Pods created by this Deployment. These labels are used for identifying and grouping Pods.  
@@ -151,6 +151,12 @@ Specifies the containers and other settings for the Pods.
     - **image**: `nginx:latest` is the Docker image for the container.  
     - **ports**: The container will expose port 80 to make the application accessible.
 
+
+#### Note:
+  
+Above yaml contains 3 labels `Deployment.metadata.labels`, `selector.matchLabels` & `template.metadata.labels`.   
+- `Deployment.metadata.labels` can be unique or different and serve the purpose of categorizing the Deployment resource itself.   
+- `selector.matchLabels` and `template.metadata.labels` must always match because they are directly tied to the Pods the Deployment manages. If these labels do not match, Kubernetes will not be able to select and manage the Pods properly. Kubernetes uses these labels to ensure that the desired number of Pods are running, updated, and correctly replaced when necessary.
 ---
 
 ### How to Create a Deployment
@@ -161,10 +167,38 @@ To create a Deployment using the YAML file above, follow these steps:
 2. Use `kubectl` to apply the Deployment configuration to your Kubernetes cluster:
    ```bash
    kubectl apply -f deployment.yaml
-   ```
-
+   ```   
 This command will create the Deployment and the associated Pods.
 
+3. To see all resource /objects created by `Deployment` use following command
+  ```bash
+  kubectl get all -n <namespace-name>
+  kubectl get all   # for default namespace 
+  ```
+The command will display details about the following types of resources, if they exist in the current namespace:   
+Pods, Deployments, ReplicaSets, Services & others.
+
+**output:**
+
+```bash
+
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/my-deployment-xxxxxxxxxx-xxxxx   1/1     Running   0          1m
+pod/my-deployment-xxxxxxxxxx-xxxxx   1/1     Running   0          1m
+pod/my-deployment-xxxxxxxxxx-xxxxx   1/1     Running   0          1m
+
+NAME                            DESIRED   CURRENT   READY   AGE
+deployment.apps/my-deployment   3         3         3       1m
+
+NAME                                      DESIRED   CURRENT   READY   AGE
+replicaset.apps/my-deployment-xxxxxxxxxx  3         3         3       1m
+```
+
+In this example:
+- There are 3 Pods.
+- There's one Deployment (`my-deployment`), which ensures that 3 Pods are running.
+- The ReplicaSet is managing the Pods for the Deployment.
+- 
 ---
 
 #### How Resources Are Created with a Deployment:
