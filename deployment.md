@@ -207,3 +207,10 @@ The ReplicaSet ensures that the correct number of Pods is running. If any Pods c
 
 ---
 
+## What's Next?
+
+In Next Part, we will discuss Labels, Selectors & Annotation.
+
+[Next Article: Labels, Selectors & Annotation →](lsa.md)
+  
+
