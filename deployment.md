@@ -19,16 +19,12 @@ As we already disscussed that deployment provide a way to manage & scale set of 
 - `ReplicaSet`
 - `Pods`
 
-#### **ReplicaSet**   
-The ReplicaSet is closely tied to the Deployment resource, it ensures that a specified number of identical Pods are running at any given time. It maintains the desired number of replicas of Pods and automatically replaces any Pods that fail or are deleted. 
-It manages the actual creation and scaling of Pods. It's typically created and managed automatically by a Deployment. 
-If you scale or update the Deployment, Kubernetes will modify the ReplicaSet to ensure the Pods match the new configuration.
-
-
 #### Pod   
-As we already discussed in previous articles waht is Pod now lets discuss how Pods are Managed by Deployemnt through ReplicaSets.   
-A ReplicaSet creates and manages the Pods. It makes sure that the desired number of Pods (replicas) are running and that they have the correct specifications (container image, ports, environment variables, etc.).
-When the Deployment is created, the ReplicaSet generates the Pods based on the Pod template defined in the Deployment.
+As we already discussed in previous articles waht is Pod now lets discuss how Pods are Managed by Deployemnt through ReplicaSets.
+
+#### **ReplicaSet**   
+The ReplicaSet is closely tied to the Deployment resource, it ensures that a specified number of identical Pods are running at any given time. It creates and manages the Pods. It makes sure that the desired number of Pods (replicas) are running and that they have the correct specifications (container image, ports, environment variables, etc.). When the Deployment is created, the ReplicaSet generates the Pods based on the Pod template defined in the Deployment. It maintains the desired number of replicas of Pods and automatically replaces any Pods that fail or are deleted. If you scale or update the Deployment, Kubernetes will modify the ReplicaSet to ensure the Pods match the new configuration.
+
 
 ---
 
