@@ -1,15 +1,14 @@
 # Kubernetes YAML
 
-In Kubernetes, when weu define resources using `YAML` or `JSON` files, we use the **AKMS** structure, which stands for `apiVersion`, `kind`, `metadata`, and `spec`(data field in some resouces). 
-These four fields are essential for defining the desired state of your Kubernetes resources. Lets braek down each field to understand it deeply.
+In Kubernetes, when we define resources using `YAML` or `JSON` files, we use the **AKMS** structure, which stands for `apiVersion`, `kind`, `metadata`, and `spec`(data field in some resouces). 
+These four fields are essential for defining the desired state of your Kubernetes resources. Lets break down each field to understand it deeply.
 
 ```yaml
 apiVersion:
 kind:
 metadata:
 spec:
-```deployment.md
-
+```
 
 ### 1. **apiVersion**
 The **apiVersion** field specifies which version of the Kubernetes API to use for managing the resource. This ensures compatibility with Kubernetes' evolving API.    
