@@ -18,7 +18,7 @@ ReplicaSet ensures that a specified number of identical Pods are running at any 
 
 ### Create a Deployment
 
-### 1.Imperative Way
+### 1.  Imperative Way
 
 In Kubernetes, you can also create a deployment in an imperative way using the `kubectl` command. Here's the command to create a deployment with a specific image and other parameters:   
 ```bash
@@ -43,7 +43,7 @@ This creates a deployment named `my-app` using the `nginx:latest` image.
   kubectl create deployment my-app --image=nginx:latest --replicas=3 
   ```   
 
-### 2.Declarative Way
+### 2.  Declarative Way
 
 For long-term management, scalability, and reliability, declarative configurations (via YAML/JSON files) are better because they enable Kubernetes to enforce the desired state. They also help with automation, CI/CD integration, and consistency across environments.
 
