@@ -47,7 +47,7 @@ spec:
     - containerPort: 80   
  
 ```
-Above YAML has 4 major parts which are apiVersion, kind, metadata & spec (`AKMS`).   
+Each YAML in K8s has 4 major parts which are apiVersion, kind, metadata & spec (`AKMS`).   
 **`apiVersion`**: Specifies the version of the Kubernetes API for the resource (e.g., `v1` for Pod).   
 **`kind`**: Specifies the type of resource (e.g., `Deployment`, `Pod`).   
 **`metadata`**: Contains information like the resource's name, namespace, labels, and other identifying data.   
