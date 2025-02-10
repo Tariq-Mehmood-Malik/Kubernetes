@@ -1,4 +1,4 @@
-# Imperative vs. Declarative Kubernetes
+# Imperative vs. Declarative
 
 There are two main ways to create these resources in Kubernetes: imperative and declarative methods. Let's break these down in an easy-to-understand way.   
 
