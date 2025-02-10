@@ -207,4 +207,3 @@ The ReplicaSet ensures that the correct number of Pods is running. If any Pods c
 
 ---
 
-This version should now be free of errors and more readable. Let me know if you need any further clarification!
