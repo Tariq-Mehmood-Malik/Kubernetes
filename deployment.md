@@ -54,15 +54,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-deployment
+  labels:
+    app: my-dep        # Deployment lable
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: my-app
+      app: my-app    # matchLable should be same as metadata.labels
   template:
     metadata:
       labels:
-        app: my-app
+        app: my-app  #  same as matchLable
     spec:
       containers:
       - name: my-container
@@ -89,7 +91,7 @@ This defines the type of Kubernetes resource being created. In this case, it's a
 
 **metadata:**  
 Contains metadata about the Deployment, like its name, namespace, and labels.  
-- **name**: `my-app-deployment` is the name given to the Deployment.
+- **name**: `my-deployment` is the name given to the Deployment.
 - **labels**: Labels are used to categorize or organize resources, here the label is `app: my-app`.
 
 ```yaml
@@ -100,18 +102,27 @@ spec:
       app: my-app
 ```
 
-**spec:**  
+**spec:**    
 Describes the desired state of the Deployment, which includes details like the number of replicas, selectors, and the Pod template. The spec is where you define the Deployment's characteristics, such as how many replicas to run and how the Pods should look.
 
-**replicas: 3**  
+**replicas: 3**     
 This field specifies the number of Pods that should be running. Here, Kubernetes will maintain 3 replicas of the Pod.
 
-**selector:**  
-A selector with `matchLabels` is used to select resources (such as Pods) based on their label values. It allows you to define a set of label key-value pairs, and Kubernetes will match the resources that have those labels.  
-Let’s say you have already created a deployment of Pods using the above YAML; then Kubernetes will use this selector to search and select Pods and modify them if you change the YAML. If creating for the first time, it will search for already existing Pods with similar labels to add them to the Deployment.
+**selector**   
+A selector with `matchLabels` is used to select resources (such as Pods) based on their label values. It allows you to define a set of label key-value pairs, and Kubernetes will match the resources that have those labels.
 
-  - **matchLabels**: The `app: my-app` label is used to match Pods that belong to this Deployment.  
-    The `matchLabels` selector is used in Kubernetes to identify and target specific resources based on their labels. Labels are key-value pairs that are attached to Kubernetes objects (such as Pods, Services, Deployments, etc.) and are used for organizing, categorizing, and selecting those objects.
+- **For existing deployments**: If you have already created a Deployment of Pods using the YAML, Kubernetes will use this selector to find and select Pods that match the specified labels. If the Deployment’s configuration is changed (e.g., a change in the Pod template or other settings), Kubernetes will update those selected Pods accordingly.
+
+- **For new deployments**: If you are creating the Deployment for the first time, Kubernetes will search for any Pods that already exist with matching labels and associate them with the new Deployment. If no matching Pods exist, Kubernetes will create new Pods based on the Pod template defined in the Deployment.
+
+
+**matchLabels:**
+  The **`matchLabels`** selector is used to match Pods that belong to a specific Deployment.
+  
+  - **Labels**: In this case, the label `app: my-app` is used to identify and target Pods that should be part of this Deployment.
+  
+  - **Function**: The `matchLabels` selector is used to ensure that Kubernetes identifies and targets specific resources based on the labels attached to them. Labels are key-value pairs that are applied to Kubernetes objects (e.g., Pods, Services, Deployments), which helps in **organizing**, **categorizing**, and **selecting** those objects for management or scaling purposes.
+
 
 ```yaml
   template:
