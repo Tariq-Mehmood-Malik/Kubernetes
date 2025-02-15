@@ -14,7 +14,7 @@ kubectl get pods -l env=production
 ```
 
 ---
-
+lsa
 ### **Examples**
 
 **Lets create a Pod with Labels**:
@@ -171,3 +171,10 @@ kubectl describe pod my-pod | grep Annotations
   ```
 
 ---
+
+## What's Next?
+
+In Next Part, we will discuss Enviroment Variables, ConfigMap & Secret in K8s.
+
+[Next Article: Enviroment Variables, ConfigMap & Secret in K8s →](ev-cm-st.md)
+  
