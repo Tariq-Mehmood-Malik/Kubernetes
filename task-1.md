@@ -108,7 +108,7 @@ Here are some tasks for your learning & practice , You can complete and share wo
 
   Accessing web pod using node IP and port 30080.
  
-  ![132](images/132.png)
+
 
 
 **4. Create a ConfigMap for storing your name & age**
