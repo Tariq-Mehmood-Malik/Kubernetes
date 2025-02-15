@@ -222,10 +222,10 @@ Lets create a Secret using following command:
    ```bash
    kubectl create secret generic my-secret --from-literal=username=admin --from-literal=password=secretpassword
    ```   
-   This will create secret with 2 key value pairs.
+   This will encode provided values in `Base64` then create secret.
 
 
-Now lets create a Secret is K8s with YAML file. Before creating secret in YAMl we need to encode our values in `base64` for security.   
+Now lets create a Secret is K8s with YAML file. Before creating secret in YAMl we need to manually encode our values in `base64` for security.   
    ```bash
    echo -n "admin" | base64    # Output will be YWRtaW4=
    echo -n "secretpassword" | base64    # Output will be c2VjcmV0cGFzc3dvcmQ=
