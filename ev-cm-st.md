@@ -29,7 +29,9 @@ This way you can make your Docker image more generic and possibly reuse the same
 
 In Kubernetes, environment variables are scoped to a container, and there are three main ways of adding them. 
 
-### Direct Method
+---
+
+## Direct Method
 
 This option is the most straightforward. You can simply specify environment variables directly in your deployment definition with an **env** keyword:   
 
@@ -65,5 +67,150 @@ There are some downsides of using the direct method for environment variables in
 
 To overcome these issues, we use `ConfigMaps` or `Secrets` in K8s.
 
+---
+
+## ConfigMap   
+
+Another way of providing environment variables to your application is by passing them from Kubernetes `ConfigMap`. A `ConfigMap` allows you to manage environment variables or configuration data separately from the Pod / Deployment configuration (YAML), which is useful for reusable configurations. This way you don't specify the value of the environment variable directly as we did before instead, you instruct Kubernetes to take the value of a specified ConfigMap object and use it as a value of an environment variable.
+
+Lets create a ConfigMap (CM) is K8s with YAML file with 2 Key value pairs.
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+data:
+  MY_ENV_VAR: "Test_value"
+  ANOTHER_ENV_VAR: "another_value"
+```
+   
+To create the ConfigMap using the YAML file:
+
+```bash
+kubectl apply -f configmap.yaml
+```
+
+
+We can also create a CM using following command:
+
+```bash
+kubectl create configmap my-config --from-literal=MY_ENV_VAR="Test_value" --from-literal=ANOTHER_ENV_VAR="another_value"
+```
+
+
+Now lets create a POD which uses above CM for its Enviroment variable.
+
+- 1. You can reference whole CM resource by using `envFrom:` in container specs of POD, which will transfer all key value pairs defined in CM as Enviroment variables to POD. 
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: example-pod
+   spec:
+     containers:
+     - name: example-container
+       image: nginx
+       envFrom:                 # use to refence whole CM
+       - configMapRef:
+           name: my-config      # name of your CM
+   ```
+
+- 2. OR if you only need one key from a CM as an environment variable, you can specify it using the `env` field in the Pod's container spec.
+   
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: example-pod
+   spec:
+     containers:
+     - name: example-container
+       image: nginx
+       env:
+       - name: MY_ENV_VAR      # Enviroment variable name
+         valueFrom:            # Use to specify where to get its value
+           configMapKeyRef:
+             name: my-config   # CM name
+             key: MY_ENV_VAR   # Key name from which we wil get value for our ENV
+   ```
+
+
+- We can also create / get values from file for ConfigMap:
+   
+   ```bash
+   kubectl create configmap my-config --from-file=<path-to-file>
+   ```   
+
+
+- We can also create / get values from Enviroment variables for ConfigMap:
+   
+   ```bash
+   kubectl create configmap my-config --from-env-file=<path-to-env-file>
+   ```
+
+
+- List all ConfigMaps:
+   
+   ```bash
+   kubectl get configmaps
+   ```
+
+- Get details of a specific ConfigMap:   
+   
+   ```bash
+   kubectl get configmap my-config -o yaml
+   ```
+
+- Update a ConfigMap
+
+   To update an existing ConfigMap, you can either edit it directly or replace it.
+   
+   Edit a ConfigMap using `kubectl edit`:
+   
+   ```bash
+   kubectl edit configmap my-config
+   ```   
+   This opens the ConfigMap in an editor where you can make changes.
+
+
+
+- Delete a ConfigMap
+   
+   ```bash
+   kubectl delete configmap my-config
+   ```
+
+
+
+- Mounting ConfigMap as a Volume, we will discuss this in details in K8s Volume section.
+   
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: example-pod
+   spec:
+     containers:
+     - name: example-container
+       image: nginx
+       volumeMounts:
+       - name: config-volume      # Volume name
+         mountPath: /etc/config 
+     volumes:
+     - name: config-volume
+       configMap:
+         name: my-config
+   ```
+   
+   This mounts the ConfigMap data as files inside the `/etc/config` directory inside the container.
+
+
+
+- Delete All ConfigMaps in a Namespace
+
+   ```bash
+   kubectl delete configmap --all -n <namespace>
+   ```
 
 
