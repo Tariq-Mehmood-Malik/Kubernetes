@@ -58,6 +58,7 @@ This option is the most straightforward. You can simply specify environment vari
               value: "development"
    ```
    
+
 If your application is instructed to read the value of an environment variable called `ENVIRONMENT`, it will get predefined value to run your application in the desired mode. You can define as much enviroment variables as you like.    
 
 There are some downsides of using the direct method for environment variables in Kubernetes which includes:
