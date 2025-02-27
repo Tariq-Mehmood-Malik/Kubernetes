@@ -72,6 +72,7 @@ spec:
   storageClassName: recycle
 ```
 
+Noe creating DB POD of mongo. (In prod section we will use StatefulSet for DB pod).
 
 ##### db-pod.yaml
 ```yaml
@@ -103,6 +104,24 @@ spec:
       persistentVolumeClaim:
         claimName: db-pvc
 ```   
+
+Now lets create a service for our Database through which the app deployment / pods can communicate with DB pod.
+
+##### app-svc.yaml   
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-svc
+  namespace: dev
+spec:
+  ports:
+    - targetPort: 27017
+      port: 27017
+  selector:
+    type: mongo-db
+```
+
 
 
 Now its time to create deployment called **web-test** in yaml file named `web-test.yaml` that should use simple webpage with **env** variables.    
@@ -205,7 +224,7 @@ spec:
     app: nginx-webapp
 ```
 
-Now lets create **app** deployment.
+Now lets create **app** deployment, with env variables to define DB pod service name and pod for easy communication.
 
 ##### app-dep.yaml   
 ```yaml
@@ -231,6 +250,11 @@ spec:
           image: python:3.12-slim-bullseye
           ports:
             - containerPort: 8080
+          env:  
+            - name: DATABASE_HOST
+              value: db-svc
+            - name: DATABASE_PORT
+              value: "27017"
 ```
 
 Now lets create a service type **NodePort** for our deployment app.
@@ -252,13 +276,28 @@ spec:
     app: python-app
 ```
 
+Lets create a Network Policy that allows traffic only from app PODs to DB POD.
 
 
-This setup gives you a development cluster with the following components:
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: app-to-db
+  namespace: dev
+spec:
+  podSelector:
+    matchLabels:
+      type: mongo-db
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: python-app
+      ports:
+        - protocol: TCP
+          port: 27017
+```
 
-Deployments for web-test, app, and mongo.
-NodePort services for exposing deployments.
-NetworkPolicy to restrict communication between the app and DB pods.
-ConfigMap and Secrets for managing environment variables in the web-test pod.
 For the prod setup, best practices include high availability, autoscaling, resource limits, and StatefulSets for MongoDB. This ensures that the prod environment is resilient and optimized for production.
 
