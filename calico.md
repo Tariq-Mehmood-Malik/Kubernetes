@@ -41,8 +41,6 @@ To integrate Calico with Flannel in your Kubernetes cluster, follow these steps:
    ```bash
    kubectl get pods -n kube-system -l k8s-app=canal
    ```
-
-
+   
    Ensure all pods are running without errors.
 
-By following these steps, you integrate Calico's Network Policy enforcement with Flannel's networking capabilities, enhancing your cluster's networking and security features. 
