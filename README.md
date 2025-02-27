@@ -1,6 +1,6 @@
-# Kubernetes
+# Kubernetes Handbook
 
-My goto guide to learn and practice Kunbernetes.
+My goto Handbook to learn and practice Kunbernetes.
 
 ![k8](images/01.webp)
 
