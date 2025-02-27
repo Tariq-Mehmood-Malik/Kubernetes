@@ -1,4 +1,4 @@
-# Kubernetes Task 02
+# Kubernetes Task
 
 **1- Create atleast 2 resources in the "lab6" ns and delete after completion.**
 
