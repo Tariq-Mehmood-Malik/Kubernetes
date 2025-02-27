@@ -19,8 +19,8 @@ Above is the task assigned to me as **Devops** Engineer. Let's analyze it and th
 - 1st we need to setup a K8s Cluster, but i have alreday created the cluster with 1 master & 1 worker node using **Kubeadm** which you can see [here](https://github.com/Tariq-Mehmood-Malik/Kubernetes-Cluster-Creation/blob/main/README.md).
 - Now lets focus to next steps, we need to create 2 different namespaces (Virtual Clusters) named **dev** & **prod**.
 - Our **dev** cluster should have 2 Deployments named **web-test** & **app** along with a POD of **mongo** database.   
-- Both deployments should be locally available which means we need to create service for each deployemnt with type **`NodePort`** and create Network Policy to ensure that DB pod is only talk with app deployment.    
-- Our DB pod should use Volume for its data storage with Retain (recycle) policy.
+- Both deployments should be locally available which means we need to create service for each deployemnt with type **`NodePort`** and we need to create Network Policy to ensure that DB pod is only talk with app deployment.    
+- Our DB pod should use Volume for its data storage with recycle policy.
 - Our web-test deployment should use simple webpage with **env** variable, we will use env as volume and attached it to our web container.
 - After that we have to recreate at same setup for **prod** in this step we use multiple K8s features & resources and also follows best practices to make our cluster more optimized and resilliant.
 
@@ -36,7 +36,7 @@ Lets 1st create a namespace called **dev** for deveploment enviroment for buildi
   kubectl create namespace dev
   ```
 
-Before creating yaml for mongo DB Pod called **db-pod.yaml** as per our requirements, incldung volume for its data. Lets create PV and PVC for our POD.
+Now creating yaml for mongo DB Pod called **db-pod.yaml** as per our requirements, incldung volume for its data. Lets create PV and PVC for our POD.
 
 ##### pv1.yaml
 ```yaml
@@ -62,6 +62,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: db-pvc
+  namespace: dev
 spec:
   accessModes:
     - ReadWriteOnce
@@ -101,15 +102,155 @@ spec:
     - name: db-data
       persistentVolumeClaim:
         claimName: db-pvc
+```   
+
+
+Now its time to create deployment called **web-test** in yaml file named `web-test.yaml` that should use simple webpage with **env** variables.    
+
+Before creating deployment yaml lets create CM that stores our custom index.html file that uses **env** to mount it as volume and also create an other CM that store our env variables to be used in index.html.   
+
+##### index-html.yaml      
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: index-html
+  namespace: dev
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>{{ .Env.PAGE_TITLE }}</title>
+    </head>
+    <body>
+      <h1>{{ .Env.PAGE_HEADER }}</h1>
+      <p>{{ .Env.PAGE_MESSAGE }}</p>
+    </body>
+    </html>
+```   
+
+Now lets create another CM that stores env variable values need in index.html file.   
+
+#####  html-data-cm.yaml    
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: html-data
+  namespace: dev
+data:
+  PAGE_TITLE: "DevOps-12"
+  PAGE_HEADER: "Welcome Students"
+  PAGE_MESSAGE: "This is my web-page"
 ```
 
 
+Now lets create our web-test deployment using nginx.
 
 
+##### web-dep.yaml   
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-test
+  namespace: dev
+  labels:
+    app: web-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-webapp
+  template:
+    metadata:
+      labels:
+        app: nginx-webapp
+    spec:
+      containers:
+        - name: web-container
+          image: nginx
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: html-template
+              mountPath: /usr/share/nginx/html/index.html
+              subPath: index.html
+          envFrom:
+            - configMapRef:
+                name: html-data
+      volumes:
+        - name: html-template
+          configMap:
+            name: index-html
+```
 
+Now lets create a service type **NodePort** for our deployment web-test.
 
+##### web-svc.yaml
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-webapp
+  namespace: dev
+spec:
+  type: NodePort
+  ports:
+    - targetPort: 80
+      port: 80
+      nodePort: 30080
+  selector:
+    app: nginx-webapp
+```
 
+Now lets create **app** deployment.
 
+##### app-dep.yaml   
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app
+  namespace: dev
+  labels:
+    app: app-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-app
+  template:
+    metadata:
+      labels:
+        app: python-app
+    spec:
+      containers:
+        - name: app-container
+          image: python:3.12-slim-bullseye
+          ports:
+            - containerPort: 8080
+```
+
+Now lets create a service type **NodePort** for our deployment app.
+
+##### app-svc.yaml   
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-app
+  namespace: dev
+spec:
+  type: NodePort
+  ports:
+    - targetPort: 8080
+      port: 8080
+      nodePort: 30081
+  selector:
+    app: python-app
+```
 
 
 
