@@ -24,8 +24,94 @@ Above is the task assigned to me as **Devops** Engineer. Let's analyze it and th
 - Our web-test deployment should use simple webpage with **env** variable, we will use env as volume and attached it to our web container.
 - After that we have to recreate at same setup for **prod** in this step we use multiple K8s features & resources and also follows best practices to make our cluster more optimized and resilliant.
 
+---
 
-## My-Solution:
+# My-Solution:
+
+## Dev Cluster
+
+Lets 1st create a namespace called **dev** for deveploment enviroment for building and testing our cluster.
+
+  ```bash
+  kubectl create namespace dev
+  ```
+
+Before creating yaml for mongo DB Pod called **db-pod.yaml** as per our requirements, incldung volume for its data. Lets create PV and PVC for our POD.
+
+##### pv1.yaml
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: recycle-volume
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: recycle
+  hostPath:
+    path: /tmp/pv
+```
+
+##### db-pvc.yaml
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi  
+  storageClassName: recycle
+```
+
+
+##### db-pod.yaml
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+  namespace: dev
+  labels:
+    type: mongo-db
+spec:
+  containers:
+  - name: db-container
+    image: mongo:4.4
+    ports:
+    - containerPort: 27017
+    env:
+      - name: MONGO_INITDB_ROOT_USERNAME
+        value: "root"
+      - name: MONGO_INITDB_ROOT_PASSWORD
+        value: "rootpass"
+      - name: MONGO_INITDB_DATABASE
+        value: "myappdb"
+    volumeMounts:
+      - mountPath: /data/db
+        name: db-data
+  volumes:
+    - name: db-data
+      persistentVolumeClaim:
+        claimName: db-pvc
+```
+
+
+
+
+
+
+
+
+
+
 
 This setup gives you a development cluster with the following components:
 
