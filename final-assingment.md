@@ -278,7 +278,7 @@ spec:
 
 Lets create a Network Policy that allows traffic only from app PODs to DB POD.
 
-
+##### app-bd-policy.yaml
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -298,6 +298,15 @@ spec:
         - protocol: TCP
           port: 27017
 ```
+
+
+Now lets create all objects one by one and test them.
+
+```bash
+
+
+```
+
 
 For the prod setup, best practices include high availability, autoscaling, resource limits, and StatefulSets for MongoDB. This ensures that the prod environment is resilient and optimized for production.
 
