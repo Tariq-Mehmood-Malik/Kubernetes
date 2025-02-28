@@ -382,7 +382,7 @@ k get all -n dev
 
 ---
 
-## Prod
+# Prod
 
 Lets create a Network Policy that allows traffic only from app PODs to DB POD.
 
@@ -407,6 +407,4 @@ spec:
           port: 27017
 ```
 
-
-For the prod setup, best practices include high availability, autoscaling, resource limits, and StatefulSets for MongoDB. This ensures that the prod environment is resilient and optimized for production.
 
