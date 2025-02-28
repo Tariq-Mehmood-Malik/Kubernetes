@@ -38,7 +38,7 @@ Lets 1st create a namespace called **dev** for deveploment enviroment for buildi
   kubectl create namespace dev
   ```
 
-f1
+![f1](images/f1.png)
 
 
 Now creating yaml for mongo DB Pod called **db-pod.yaml** as per our requirements, incldung volume for its data. Lets create PV and PVC for our POD.
@@ -88,7 +88,8 @@ k get pv
 k get pvc -n dev
 ```
 
-f2
+
+![f2](images/f2.png)
 
 
 Lets create secret for Mongo DB credentials.
@@ -114,7 +115,8 @@ k apply -f db-secret.yaml
 k get secret -n dev
 ```
 
-f3
+![f3](images/f3.png)
+
 
 Now creating DB POD of mongo. (In prod section we will use StatefulSet for DB pod).
 
@@ -153,7 +155,8 @@ k describe po db-pod -n dev
 ```
 
 
-f4
+![f4](images/f4.png)
+
 
 Now lets create a service for our Database through which the our app deployment pods can communicate with DB pod.
 
@@ -180,7 +183,8 @@ k get po -o wide -n dev
 ```
 
 
-f5
+![f5](images/f5.png)
+
 
 Now lets create **app** deployment, with env variables to define DB pod service name and pod for easy communication.
 
@@ -223,7 +227,9 @@ k get all -n dev
 k describe deployment python-app -n dev
 ```
 
-f6
+
+![f6](images/f6.png)
+
 
 Now lets create a service type **NodePort** for our deployment app.
 
@@ -251,7 +257,7 @@ k get svc -n dev
 
 
 
-f7
+![f7](images/f7.png)
 
 
 Now its time to create deployment called **web-test** in yaml file named `web-test.yaml` that should use simple webpage with **env** variables.    
@@ -287,7 +293,9 @@ k get cm -n dev
 ```
 
 
-f8
+![f8](images/f8.png)
+
+
 
 Now lets create our web-test deployment using nginx.
 
@@ -360,7 +368,17 @@ k get all -n dev
 ```
 
 
-f10
+![f9](images/f9.png)
+
+
+
+
+
+
+
+
+![f10](images/f10.png)
+
 
 ---
 
