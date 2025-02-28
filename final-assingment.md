@@ -30,6 +30,8 @@ Above is the task assigned to me as **Devops** Engineer. Let's analyze it and th
 
 ## Dev Cluster
 
+This is dev setup only for testing creating baseline for production, in production i will enhance each resource to my knowledge.
+
 Lets 1st create a namespace called **dev** for deveploment enviroment for building and testing our cluster.
 
   ```bash
@@ -72,7 +74,23 @@ spec:
   storageClassName: recycle
 ```
 
-Noe creating DB POD of mongo. (In prod section we will use StatefulSet for DB pod).
+Lets create secret for Mongo DB credentials.
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongo-credentials
+  namespace: dev
+type: Opaque
+data:
+  MONGO_INITDB_ROOT_USERNAME: cm9vdA==  # base64 encoded value of "root"
+  MONGO_INITDB_ROOT_PASSWORD: cm9vdHBhc3M=  # base64 encoded value of "rootpass"
+  MONGO_INITDB_DATABASE: bXlhcHBkYg==  # base64 encoded value of "myappdb"
+```
+
+
+Now creating DB POD of mongo. (In prod section we will use StatefulSet for DB pod).
 
 ##### db-pod.yaml
 ```yaml
@@ -89,13 +107,9 @@ spec:
     image: mongo:4.4
     ports:
     - containerPort: 27017
-    env:
-      - name: MONGO_INITDB_ROOT_USERNAME
-        value: "root"
-      - name: MONGO_INITDB_ROOT_PASSWORD
-        value: "rootpass"
-      - name: MONGO_INITDB_DATABASE
-        value: "myappdb"
+    envFrom:
+      - secretRef:
+          name: mongo-credentials  # Reference to the Secret you created
     volumeMounts:
       - mountPath: /data/db
         name: db-data
@@ -105,7 +119,7 @@ spec:
         claimName: db-pvc
 ```   
 
-Now lets create a service for our Database through which the app deployment / pods can communicate with DB pod.
+Now lets create a service for our Database through which the our app deployment pods can communicate with DB pod.
 
 ##### app-svc.yaml   
 ```yaml
@@ -123,6 +137,57 @@ spec:
 ```
 
 
+Now lets create **app** deployment, with env variables to define DB pod service name and pod for easy communication.
+
+##### app-dep.yaml   
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app
+  namespace: dev
+  labels:
+    app: app-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-app
+  template:
+    metadata:
+      labels:
+        app: python-app
+    spec:
+      containers:
+        - name: app-container
+          image: python:3.12-slim-bullseye
+          ports:
+            - containerPort: 8080
+          env:  
+            - name: DATABASE_HOST
+              value: db-svc
+            - name: DATABASE_PORT
+              value: "27017"
+```
+
+Now lets create a service type **NodePort** for our deployment app.
+
+##### app-svc.yaml   
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-app
+  namespace: dev
+spec:
+  type: NodePort
+  ports:
+    - targetPort: 8080
+      port: 8080
+      nodePort: 30081
+  selector:
+    app: python-app
+```
 
 Now its time to create deployment called **web-test** in yaml file named `web-test.yaml` that should use simple webpage with **env** variables.    
 
@@ -224,57 +289,17 @@ spec:
     app: nginx-webapp
 ```
 
-Now lets create **app** deployment, with env variables to define DB pod service name and pod for easy communication.
 
-##### app-dep.yaml   
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: python-app
-  namespace: dev
-  labels:
-    app: app-dep
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: python-app
-  template:
-    metadata:
-      labels:
-        app: python-app
-    spec:
-      containers:
-        - name: app-container
-          image: python:3.12-slim-bullseye
-          ports:
-            - containerPort: 8080
-          env:  
-            - name: DATABASE_HOST
-              value: db-svc
-            - name: DATABASE_PORT
-              value: "27017"
+Now lets create all objects one by one and test them.
+
+```bash
+
+
 ```
 
-Now lets create a service type **NodePort** for our deployment app.
+---
 
-##### app-svc.yaml   
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: service-app
-  namespace: dev
-spec:
-  type: NodePort
-  ports:
-    - targetPort: 8080
-      port: 8080
-      nodePort: 30081
-  selector:
-    app: python-app
-```
+## Prod
 
 Lets create a Network Policy that allows traffic only from app PODs to DB POD.
 
@@ -284,7 +309,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: app-to-db
-  namespace: dev
+  namespace: prod
 spec:
   podSelector:
     matchLabels:
@@ -297,14 +322,6 @@ spec:
       ports:
         - protocol: TCP
           port: 27017
-```
-
-
-Now lets create all objects one by one and test them.
-
-```bash
-
-
 ```
 
 
