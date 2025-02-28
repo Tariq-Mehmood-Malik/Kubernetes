@@ -21,7 +21,7 @@ Above is the task assigned to me as **Devops** Engineer. Let's analyze it and th
 - Our **dev** cluster should have 2 Deployments named **web-test** & **app** along with a POD of **mongo** database.   
 - Both deployments should be locally available which means we need to create service for each deployemnt with type **`NodePort`** and we need to create Network Policy to ensure that DB pod is only talk with app deployment.    
 - Our DB pod should use Volume for its data storage with recycle policy.
-- Our web-test deployment should use simple webpage with **env** variable, we will use env as volume and attached it to our web container.
+- Our web-test deployment should use simple webpage with **env** variable, we will use ConfigMap for index.html as volume and attached it to our web container.
 - After that we have to recreate at same setup for **prod** in this step we use multiple K8s features & resources and also follows best practices to make our cluster more optimized and resilliant.
 
 ---
@@ -37,6 +37,9 @@ Lets 1st create a namespace called **dev** for deveploment enviroment for buildi
   ```bash
   kubectl create namespace dev
   ```
+
+f1
+
 
 Now creating yaml for mongo DB Pod called **db-pod.yaml** as per our requirements, incldung volume for its data. Lets create PV and PVC for our POD.
 
@@ -74,8 +77,24 @@ spec:
   storageClassName: recycle
 ```
 
+```bash
+mkdir dev
+cd dev
+nano pv1.yaml
+nano db-pvc.yaml
+k apply -f pv1.yaml
+k apply -f db-pvc.yaml
+k get pv
+k get pvc -n dev
+```
+
+f2
+
+
 Lets create secret for Mongo DB credentials.
 
+
+##### db-secret.yaml
 ```yaml
 apiVersion: v1
 kind: Secret
@@ -89,6 +108,13 @@ data:
   MONGO_INITDB_DATABASE: bXlhcHBkYg==  # base64 encoded value of "myappdb"
 ```
 
+```bash
+nano db-secret.yaml
+k apply -f db-secret.yaml
+k get secret -n dev
+```
+
+f3
 
 Now creating DB POD of mongo. (In prod section we will use StatefulSet for DB pod).
 
@@ -109,7 +135,7 @@ spec:
     - containerPort: 27017
     envFrom:
       - secretRef:
-          name: mongo-credentials  # Reference to the Secret you created
+          name: mongo-credentials 
     volumeMounts:
       - mountPath: /data/db
         name: db-data
@@ -117,11 +143,21 @@ spec:
     - name: db-data
       persistentVolumeClaim:
         claimName: db-pvc
-```   
+```
+
+```bash
+nano db-pod.yaml
+k apply -f db-pod.yaml
+k get po -n dev
+k describe po db-pod -n dev
+```
+
+
+f4
 
 Now lets create a service for our Database through which the our app deployment pods can communicate with DB pod.
 
-##### app-svc.yaml   
+##### db-svc.yaml   
 ```yaml
 apiVersion: v1
 kind: Service
@@ -136,6 +172,15 @@ spec:
     type: mongo-db
 ```
 
+```bash
+nano db-svc.yaml
+k apply -f db-svc.yaml 
+k get svc -n dev
+k get po -o wide -n dev
+```
+
+
+f5
 
 Now lets create **app** deployment, with env variables to define DB pod service name and pod for easy communication.
 
@@ -160,15 +205,25 @@ spec:
     spec:
       containers:
         - name: app-container
-          image: python:3.12-slim-bullseye
+          image: python:3.12-alpine
+          command: ["tail", "-f", "/dev/null"]
           ports:
             - containerPort: 8080
-          env:  
+          env:
             - name: DATABASE_HOST
               value: db-svc
             - name: DATABASE_PORT
               value: "27017"
 ```
+
+```bash
+nano app-dep.yaml 
+k apply -f app-dep.yaml 
+k get all -n dev
+k describe deployment python-app -n dev
+```
+
+f6
 
 Now lets create a service type **NodePort** for our deployment app.
 
@@ -188,10 +243,20 @@ spec:
   selector:
     app: python-app
 ```
+```bash
+nano app-svc.yaml
+k apply -f app-svc.yaml 
+k get svc -n dev
+```
+
+
+
+f7
+
 
 Now its time to create deployment called **web-test** in yaml file named `web-test.yaml` that should use simple webpage with **env** variables.    
 
-Before creating deployment yaml lets create CM that stores our custom index.html file that uses **env** to mount it as volume and also create an other CM that store our env variables to be used in index.html.   
+Before creating deployment yaml lets create CM that stores our custom index.html file and mount it as ConfigMap Volume.   
 
 ##### index-html.yaml      
 ```yaml
@@ -205,30 +270,24 @@ data:
     <!DOCTYPE html>
     <html>
     <head>
-      <title>{{ .Env.PAGE_TITLE }}</title>
+      <title>DevOps-12</title>
     </head>
     <body>
-      <h1>{{ .Env.PAGE_HEADER }}</h1>
-      <p>{{ .Env.PAGE_MESSAGE }}</p>
+      <h1>Welcome Students</h1>
+      <p>This is Tariq Mehmood</p>
     </body>
     </html>
 ```   
 
-Now lets create another CM that stores env variable values need in index.html file.   
 
-#####  html-data-cm.yaml    
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: html-data
-  namespace: dev
-data:
-  PAGE_TITLE: "DevOps-12"
-  PAGE_HEADER: "Welcome Students"
-  PAGE_MESSAGE: "This is my web-page"
+```bash
+nano index-html.yaml
+k apply -f index-html.yaml 
+k get cm -n dev
 ```
 
+
+f8
 
 Now lets create our web-test deployment using nginx.
 
@@ -261,9 +320,6 @@ spec:
             - name: html-template
               mountPath: /usr/share/nginx/html/index.html
               subPath: index.html
-          envFrom:
-            - configMapRef:
-                name: html-data
       volumes:
         - name: html-template
           configMap:
@@ -293,9 +349,18 @@ spec:
 Now lets create all objects one by one and test them.
 
 ```bash
-
-
+nano index-html.yaml
+k apply -f index-html.yaml 
+k get cm -n dev
+nano web-dep.yaml 
+k apply -f web-dep.yaml 
+nano web-svc.yaml 
+k apply -f web-svc.yaml 
+k get all -n dev
 ```
+
+
+f10
 
 ---
 
