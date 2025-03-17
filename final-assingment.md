@@ -18,7 +18,13 @@ As a DevOps Engineer, You are being assigned a task for designing and building K
 Above is the task assigned to me as **Devops** Engineer. Let's analyze it and then solve it efficiently.    
 - 1st we need to setup a K8s Cluster, but i have alreday created the cluster with 1 master & 1 worker node using **Kubeadm** which you can see [here](https://github.com/Tariq-Mehmood-Malik/Kubernetes-Cluster-Creation/blob/main/README.md).
 - Now lets focus to next steps, we need to create 2 different namespaces (Virtual Clusters) named **dev** & **prod**.
-- Our **dev** cluster should have 2 Deployments named **web-test** & **app** along with a POD of **mongo** database.   
+- Our cluster should have 2 Deployments named **web-test** and **app** along with a `Pod` of **mongo** database.
+##### **web-test**
+- Should be locally availabe means we need to create service for deployemnt with type **`NodePort`** and we need to create Network Policy to ensure that DB pod is only talk with app deployment. 
+
+
+
+ 
 - Both deployments should be locally available which means we need to create service for each deployemnt with type **`NodePort`** and we need to create Network Policy to ensure that DB pod is only talk with app deployment.    
 - Our DB pod should use Volume for its data storage with recycle policy.
 - Our web-test deployment should use simple webpage with **env** variable, we will use ConfigMap for index.html as volume and attached it to our web container.
