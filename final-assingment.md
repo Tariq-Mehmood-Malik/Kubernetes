@@ -19,13 +19,8 @@ Above is the task assigned to me as **Devops** Engineer. Let's analyze it and th
 - 1st we need to setup a K8s Cluster, but i have alreday created the cluster with 1 master & 1 worker node using **Kubeadm** which you can see [here](https://github.com/Tariq-Mehmood-Malik/Kubernetes-Cluster-Creation/blob/main/README.md).
 - Now lets focus to next steps, we need to create 2 different namespaces (Virtual Clusters) named **dev** & **prod**.
 - Our cluster should have 2 Deployments named **web-test** and **app** along with a `Pod` of **mongo** database.
-##### **web-test**
-- Should be locally availabe means we need to create service for deployemnt with type **`NodePort`** and we need to create Network Policy to ensure that DB pod is only talk with app deployment. 
-
-
-
- 
-- Both deployments should be locally available which means we need to create service for each deployemnt with type **`NodePort`** and we need to create Network Policy to ensure that DB pod is only talk with app deployment.    
+- Should be locally availabe means we need to create service for each deployemnt with type **`NodePort`**.
+- To ensure that DB pod is only talk with app deploymentand we need to create Network Policy.  
 - Our DB pod should use Volume for its data storage with recycle policy.
 - Our web-test deployment should use simple webpage with **env** variable, we will use ConfigMap for index.html as volume and attached it to our web container.
 - After that we have to recreate at same setup for **prod** in this step we use multiple K8s features & resources and also follows best practices to make our cluster more optimized and resilliant.
@@ -36,18 +31,20 @@ Above is the task assigned to me as **Devops** Engineer. Let's analyze it and th
 
 ## Dev Cluster
 
-This is dev setup only for testing creating baseline for production, in production i will enhance each resource to my knowledge.
+This is dev setup only for testing creating baseline for production, in production enviroment (namespace) i will enhance each resource to my knowledge.   
 
-Lets 1st create a namespace called **dev** for deveploment enviroment for building and testing our cluster.
+### 1. Creating Namespace   
+
+Lets 1st create a namespace called **dev** for deveploment enviroment for building and testing our cluster.   
 
   ```bash
   kubectl create namespace dev
-  ```
+  ```   
 
 ![f1](images/f1.png)
 
 
-Now creating yaml for mongo DB Pod called **db-pod.yaml** as per our requirements, incldung volume for its data. Lets create PV and PVC for our POD.
+### 2. Creating Mongo-DB Pod along PV, PVC & SVC    
 
 ##### pv1.yaml
 ```yaml
@@ -98,6 +95,8 @@ k get pvc -n dev
 ![f2](images/f2.png)
 
 
+<!-- This is hidden text
+
 Lets create secret for Mongo DB credentials.
 
 
@@ -122,7 +121,7 @@ k get secret -n dev
 ```
 
 ![f3](images/f3.png)
-
+ -->
 
 Now creating DB POD of mongo. (In prod section we will use StatefulSet for DB pod).
 
@@ -131,22 +130,19 @@ Now creating DB POD of mongo. (In prod section we will use StatefulSet for DB po
 apiVersion: v1
 kind: Pod
 metadata:
-  name: db-pod
+  name: mongo
   namespace: dev
   labels:
-    type: mongo-db
+    app: mongo
 spec:
   containers:
-  - name: db-container
-    image: mongo:4.4
-    ports:
-    - containerPort: 27017
-    envFrom:
-      - secretRef:
-          name: mongo-credentials 
-    volumeMounts:
-      - mountPath: /data/db
-        name: db-data
+    - name: mongo
+      image: mongo
+      ports:
+        - containerPort: 27017
+      volumeMounts:
+        - mountPath: /data/db
+          name: db-data
   volumes:
     - name: db-data
       persistentVolumeClaim:
@@ -178,7 +174,8 @@ spec:
     - targetPort: 27017
       port: 27017
   selector:
-    type: mongo-db
+    app: mongo
+  type: ClusterIP
 ```
 
 ```bash
@@ -192,45 +189,83 @@ k get po -o wide -n dev
 ![f5](images/f5.png)
 
 
-Now lets create **app** deployment, with env variables to define DB pod service name and pod for easy communication.
+
+### 2. Creating App Deployment    
+
+I have using this [git-repo](https://github.com/wahyueko22/golang-app/tree/master/go-mongo) for app source code, i have modified souce code **Dockerfile** into multistage to reduce image size.
+
+```bash
+git clone https://github.com/wahyueko22/golang-app.git
+cd golang-app/
+ls
+cd go-mongo/
+ls
+nano Dockerfile
+docker build -t tariqmehmoodmalik/go-mongo:1.1 .
+docker push tariqmehmoodmalik/go-mongo:1.1
+```
+
+```yaml
+FROM golang:1.16.3 AS builder
+
+LABEL maintainer="test@email.com"
+
+WORKDIR /app
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build \
+    -ldflags="-w -s" \
+    -o main .
+
+FROM scratch
+
+WORKDIR /app
+COPY --from=builder /app/main .
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+EXPOSE 8009
+
+CMD ["./main"]
+```
+
+
+
+
+Now lets create **app** deployment.
 
 ##### app-dep.yaml   
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: python-app
+  name: goapp
   namespace: dev
   labels:
-    app: app-dep
+    app: goapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: python-app
+      app: goapp
   template:
     metadata:
       labels:
-        app: python-app
+        app: goapp
     spec:
       containers:
-        - name: app-container
-          image: python:3.12-alpine
-          command: ["tail", "-f", "/dev/null"]
+        - name: goapp
+          image: tariqmehmoodmalik/go-mongo:1.1
           ports:
-            - containerPort: 8080
-          env:
-            - name: DATABASE_HOST
-              value: db-svc
-            - name: DATABASE_PORT
-              value: "27017"
+            - containerPort: 8009
+          imagePullPolicy: Always
 ```
 
 ```bash
 nano app-dep.yaml 
 k apply -f app-dep.yaml 
 k get all -n dev
-k describe deployment python-app -n dev
+k describe deployment goapp -n dev
 ```
 
 
@@ -249,11 +284,11 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - targetPort: 8080
-      port: 8080
-      nodePort: 30081
+    - targetPort: 8009
+      port: 8009
+      nodePort: 30080
   selector:
-    app: python-app
+    app: goapp
 ```
 ```bash
 nano app-svc.yaml
@@ -264,6 +299,10 @@ k get svc -n dev
 
 
 ![f7](images/f7.png)
+
+
+
+### 2. Creating Web-App Deployment    
 
 
 Now its time to create deployment called **web-test** in yaml file named `web-test.yaml` that should use simple webpage with **env** variables.    
@@ -354,7 +393,7 @@ spec:
   ports:
     - targetPort: 80
       port: 80
-      nodePort: 30080
+      nodePort: 30082
   selector:
     app: nginx-webapp
 ```
