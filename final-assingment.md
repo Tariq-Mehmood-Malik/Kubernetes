@@ -31,6 +31,8 @@ Above is the task assigned to me as **Devops** Engineer. Let's analyze it and th
 
 ## Dev Cluster
 
+## App Deployment
+
 This is dev setup only for testing creating baseline for production, in production enviroment (namespace) i will enhance each resource to my knowledge.   
 
 ### 1. Creating Namespace   
@@ -301,8 +303,10 @@ k get svc -n dev
 ![f7](images/f7.png)
 
 
+## Web-App Deployment
 
-### 2. Creating Web-App Deployment    
+
+### 1. Creating Web-App index.html    
 
 
 Now its time to create deployment called **web-test** in yaml file named `web-test.yaml` that should use simple webpage with **env** variables.    
@@ -341,6 +345,8 @@ k get cm -n dev
 ![f8](images/f8.png)
 
 
+
+### 2. Creating Web-App Deployment    
 
 Now lets create our web-test deployment using nginx.
 
