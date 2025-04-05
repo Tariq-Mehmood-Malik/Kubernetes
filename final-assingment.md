@@ -40,15 +40,18 @@ This is dev setup only for testing creating baseline for production, in producti
 Lets 1st create a namespace called **dev** for deveploment enviroment for building and testing our cluster.   
 
   ```bash
+  mkdri goapp
+  cd goapp/
   kubectl create namespace dev
+  k get ns
   ```   
 
-![f1](images/f1.png)
+![f1](images/dev-01.png)
 
 
 ### 2. Creating Mongo-DB Pod along PV, PVC & SVC    
 
-##### pv1.yaml
+##### pv.yaml
 ```yaml
 apiVersion: v1
 kind: PersistentVolume
@@ -65,7 +68,7 @@ spec:
     path: /tmp/pv
 ```
 
-##### db-pvc.yaml
+##### pvc.yaml
 
 ```yaml
 apiVersion: v1
@@ -78,23 +81,21 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi  
+      storage: 500Mi  
   storageClassName: recycle
 ```
 
 ```bash
-mkdir dev
-cd dev
-nano pv1.yaml
-nano db-pvc.yaml
-k apply -f pv1.yaml
-k apply -f db-pvc.yaml
+nano pv.yaml
+nano pvc.yaml
+k apply -f pv.yaml
+k apply -f pvc.yaml
 k get pv
 k get pvc -n dev
 ```
 
 
-![f2](images/f2.png)
+![f2](images/dev-00.png)
 
 
 <!-- This is hidden text
@@ -127,7 +128,7 @@ k get secret -n dev
 
 Now creating DB POD of mongo. (In prod section we will use StatefulSet for DB pod).
 
-##### db-pod.yaml
+##### mongo.yaml
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -152,19 +153,18 @@ spec:
 ```
 
 ```bash
-nano db-pod.yaml
-k apply -f db-pod.yaml
+nano mongo.yaml
+k apply -f mongo.yaml
 k get po -n dev
-k describe po db-pod -n dev
 ```
 
 
-![f4](images/f4.png)
+![f4](images/dev-02.png)
 
 
 Now lets create a service for our Database through which the our app deployment pods can communicate with DB pod.
 
-##### db-svc.yaml   
+##### mongo-svc.yaml   
 ```yaml
 apiVersion: v1
 kind: Service
@@ -181,14 +181,14 @@ spec:
 ```
 
 ```bash
-nano db-svc.yaml
-k apply -f db-svc.yaml 
+nano mongo-svc.yaml
+k apply -f mongo-svc.yaml 
 k get svc -n dev
 k get po -o wide -n dev
 ```
 
 
-![f5](images/f5.png)
+![f5](images/dev-03.png)
 
 
 
@@ -210,7 +210,7 @@ docker push tariqmehmoodmalik/go-mongo:1.1
 ```yaml
 FROM golang:1.16.3 AS builder
 
-LABEL maintainer="test@email.com"
+LABEL maintainer="tariqmalik323@gmail.com"
 
 WORKDIR /app
 COPY . .
@@ -266,12 +266,12 @@ spec:
 ```bash
 nano app-dep.yaml 
 k apply -f app-dep.yaml 
-k get all -n dev
-k describe deployment goapp -n dev
+k get po -n dev
+k get po -o wide -n dev
 ```
 
 
-![f6](images/f6.png)
+![f6](images/dev-05.png)
 
 
 Now lets create a service type **NodePort** for our deployment app.
@@ -300,7 +300,28 @@ k get svc -n dev
 
 
 
-![f7](images/f7.png)
+![f7](images/dev-06.png)
+
+
+
+Lets test out **goapp** in through web.   
+
+
+![f7](images/dev-07.png)   
+
+
+
+Lets test our app connectivity with databse. First go to mongo pod **CLI** tesrminal and try to access our app through **curl**.   
+
+
+```bash
+k get svc -n dev
+k exec -it -n dev pod/mongo -- /bin/sh
+curl 10.102.254.204:8009
+```
+
+ 
+![f7](images/dev-08.png)   
 
 
 ## Web-App Deployment
