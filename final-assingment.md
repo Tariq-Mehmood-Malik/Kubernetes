@@ -232,6 +232,9 @@ CMD ["./main"]
 ```
 
 
+![f6](images/dev-04.png)
+
+
 
 
 Now lets create **app** deployment.
